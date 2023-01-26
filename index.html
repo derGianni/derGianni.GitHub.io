@@ -54,7 +54,88 @@
       </tr>
     </table>
     <script>
-      // JavaScript code to handle game logic and events
+      let board = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // represents the game board, 0 means empty cell
+let currentPlayer = 1; // represents the current player, 1 for X and 2 for O
+
+// function to handle cell clicks
+function handleCellClick(event) {
+  let cellId = event.target.id;
+  let cellIndex = parseInt(cellId.split("-")[1]) - 1;
+
+  if (board[cellIndex] !== 0) {
+    return; // cell is already filled
+  }
+
+  board[cellIndex] = currentPlayer;
+  event.target.innerHTML = currentPlayer === 1 ? "X" : "O";
+
+  if (checkForWinner()) {
+    alert("Player " + currentPlayer + " wins!");
+    resetGame();
+    return;
+  }
+
+  if (checkForTie()) {
+    alert("It's a tie!");
+    resetGame();
+    return;
+  }
+
+  currentPlayer = currentPlayer === 1 ? 2 : 1;
+}
+
+// function to check for a winner
+function checkForWinner() {
+  let winningCombinations = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  for (let i = 0; i < winningCombinations.length; i++) {
+    let combination = winningCombinations[i];
+    if (
+      board[combination[0]] === currentPlayer &&
+      board[combination[1]] === currentPlayer &&
+      board[combination[2]] === currentPlayer
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// function to check for a tie
+function checkForTie() {
+  for (let i = 0; i < board.length; i++) {
+    if (board[i] === 0) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// function to reset the game
+function resetGame() {
+  board = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+  currentPlayer = 1;
+  for (let i = 1; i <= 9; i++) {
+    let cell = document.getElementById("cell-" + i);
+    cell.innerHTML = "";
+  }
+}
+
+// Add event listeners to the cells
+let cells = document.getElementsByTagName("td");
+for (let i = 0; i < cells.length; i++) {
+  cells[i].addEventListener("click", handleCellClick);
+}
+
     </script>
   </body>
 </html>
